@@ -59,6 +59,5 @@ let XRSession = function(params) {
 
 XRSession.prototype = Object.create(EventTarget.prototype);
 XRSession.prototype.constructor = XRSession;
-console.log( new XRSession());
 
 export { XRSession as default}; 

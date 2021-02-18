@@ -1,4 +1,4 @@
-import * as XRSession from 'xrsession.js';
+import * as XRSession from './xrsession.js';
 
 let XRSystem = function() {
 
