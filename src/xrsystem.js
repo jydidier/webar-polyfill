@@ -1,21 +1,25 @@
 import XRSession from './xrsession.js';
+import ARDevice from './ardevice.js';
 
 let XRSystem = function() {
-
-    this.isSessionSupported = function(xrSessionMode) {
-        // TODO reject in case a webcam is not operational
-        return new Promise((resolve,reject) =>  {
-                resolve(xrSessionMode === "immersive-ar");            
-            });
+    let device;
+    
+    this.isSessionSupported = async function(sessionMode) {
+        if (sessionMode === "immersive-ar" || sessionMode === "inline")
+            return true;
+        else 
+            throw false;
     };
     
-    this.requestSession = function(sessionMode, sessionInit) {
-        return new Promise((resolve, reject) => {
-            if (sessionMode === "immersive-ar")
-                resolve(new XRSession(sessionInit));
-            else 
-                reject();            
-        });
+    this.requestSession = async function(sessionMode, sessionInit) {
+        if (sessionMode !== "immersive-ar" && sessionMode !== "inline")
+            throw false;
+
+        device = new ARDevice();
+        
+        await device.start();
+        
+        return new XRSession(device, sessionInit);
     };
 };
 

@@ -1,26 +1,9 @@
-let ARCompositor = function () {
+let ARCompositor = function (ardevice) {
     // a set of local variables
     let glLayer = null;
 
 
-    // creation of video node in order to obtain video stream
-    let constraints = { video: { width: 640, height: 480 } };
-    let video = document.createElement("video");
-    video.hidden = true;
-    video.width = constraints.video.width;
-    video.height = constraints.video.height;
-    
-    // initialization of video capture
-    navigator.mediaDevices.getUserMedia(constraints)
-        .then(function(mediaStream) {
-            video.srcObject = mediaStream;
-            video.onloadedmetadata = function(e) {
-                video.play();
-            };
-        })
-        .catch(function(err) { console.log(err.name + ": " + err.message); }); 
-        // always check for errors at the end.
-    document.body.appendChild(video);    
+
     
     // creation of the actual compositing zone
     let canvas = document.createElement("canvas");
@@ -128,37 +111,7 @@ let ARCompositor = function () {
               new Uint8Array([0, 0, 255, 255]));
 
     
-    var mat2quat = function(m) {
-        let m00, m01, m02, m10, m11, m12, m20, m21, m22;
-        [m00, m01, m02, m10, m11, m12, m20, m21, m22] = m;
-        let tr = m00 + m11 + m22;
 
-        if (tr > 0) { 
-            let S = Math.sqrt(tr+1.0) * 2; // S=4*qw 
-            qw = 0.25 * S;
-            qx = (m21 - m12) / S;
-            qy = (m02 - m20) / S; 
-            qz = (m10 - m01) / S; 
-        } else if ((m00 > m11)&&(m00 > m22)) { 
-            let S = Math.sqrt(1.0 + m00 - m11 - m22) * 2; // S=4*qx 
-            qw = (m21 - m12) / S;
-            qx = 0.25 * S;
-            qy = (m01 + m10) / S; 
-            qz = (m02 + m20) / S; 
-        } else if (m11 > m22) { 
-            let S = Math.sqrt(1.0 + m11 - m00 - m22) * 2; // S=4*qy
-            qw = (m02 - m20) / S;
-            qx = (m01 + m10) / S; 
-            qy = 0.25 * S;
-            qz = (m12 + m21) / S; 
-        } else { 
-            let S = Math.sqrt(1.0 + m22 - m00 - m11) * 2; // S=4*qz
-            qw = (m10 - m01) / S;
-            qx = (m02 + m20) / S;
-            qy = (m12 + m21) / S;
-            qz = 0.25 * S;
-        }
-    }
     
     this.setGLLayer = function(layer) {
         glLayer = layer;
@@ -167,13 +120,13 @@ let ARCompositor = function () {
     
     this.updateVideo = function() {
         gl.bindTexture(gl.TEXTURE_2D, texture0);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);        
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ardevice.getImage());        
     }
 
     this.render = function() {
         gl.useProgram(shaderProgram);
-        gl.bindTexture(gl.TEXTURE_2D, texture0);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+//         gl.bindTexture(gl.TEXTURE_2D, texture0);
+//         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
         if (glLayer !== null) {
             gl.bindTexture(gl.TEXTURE_2D, texture1);
             let origCanvas = glLayer.canvas;

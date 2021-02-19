@@ -13,7 +13,7 @@ let XRFrame = function(xrSession) {
     };
     
     this.getPose = function(space, baseSpace) {
-        
+        // TODO only 
     };
 
 };

@@ -1,14 +1,15 @@
 import ARCompositor from './arcompositor.js';
 
-let XRSession = function(params) {
+let XRSession = function(device, params) {
     let self=this;
+    let refTime = Date.now();
     
     //let environmentBlendMode; // not used in specification?
     let inputSources= [];
     let renderState = { depthNear:0.1, depthFar:1000.0, inlineVerticalFieldofView: null, baseLayer: null} ;
     let visibilityState;
     let ended = false;
-    let compositor = new ARCompositor();
+    let compositor = new ARCompositor(device);
     
     
     /*Object.defineProperty(this,"environmentBlendMode", {
@@ -37,11 +38,8 @@ let XRSession = function(params) {
     this.requestAnimationFrame = function(animationFrameCallback) {        
         // here we sould cook another callback in order to be compatible
         let sessionCallback = function() {
-            
-            animationFrameCallback(time, frame);
-        };
-        
-        
+            animationFrameCallback(Date.now() - refTime, device.getFrame());
+        };                
         return window.requestAnimationFrame(sessionCallback);
     };
     
