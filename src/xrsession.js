@@ -10,6 +10,7 @@ let XRSession = function(params) {
     let ended = false;
     let compositor = new ARCompositor();
     
+    
     /*Object.defineProperty(this,"environmentBlendMode", {
         get: function() { return environmentBlendMode; }
     });*/
@@ -33,9 +34,15 @@ let XRSession = function(params) {
     this.end = function() {        
     };
     
-    this.requestAnimationFrame = function(animationFrameCallback) {
+    this.requestAnimationFrame = function(animationFrameCallback) {        
+        // here we sould cook another callback in order to be compatible
+        let sessionCallback = function() {
+            
+            animationFrameCallback(time, frame);
+        };
         
-        window.requestAnimationFrame(animationFrameCallback);
+        
+        return window.requestAnimationFrame(sessionCallback);
     };
     
     this.requestReferenceSpace = function() {
@@ -59,6 +66,5 @@ let XRSession = function(params) {
 
 XRSession.prototype = Object.create(EventTarget.prototype);
 XRSession.prototype.constructor = XRSession;
-console.log( new XRSession());
 
 export { XRSession as default}; 
