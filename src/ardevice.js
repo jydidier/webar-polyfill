@@ -1,7 +1,7 @@
 
-import CV from '../deps/cv/index.js';
-import AR from '../deps/aruco/index.js';
-import POS from '../deps/pose/square_pose.js';
+import CV from './cv.js';
+import AR from './aruco.js';
+import POS from './square_pose.js';
 
 let ARDevice = function(deviceConfig) {
     let canvas = null; 
