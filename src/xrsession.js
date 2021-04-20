@@ -1,4 +1,5 @@
 import ARCompositor from './arcompositor.js';
+import XRFrame from './xrframe.js';
 
 let XRSession = function(device, params) {
     let self=this;

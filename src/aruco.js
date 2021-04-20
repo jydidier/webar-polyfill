@@ -1,4 +1,4 @@
-import CV from '../cv/index.js';
+import CV from './cv.js';
 /*
 Copyright (c) 2011 Juan Mellado
 

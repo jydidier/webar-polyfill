@@ -77,17 +77,16 @@ let ARDevice = function(deviceConfig) {
         canvas.height = video.height = constraints.video.height;
         canvas.style.width = canvas.width + "px";
         canvas.style.height = canvas.height + "px";
-        
-        
-        let mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+        let mediaStream = await navigator.mediaDevices.getUserMedia(constraints).catch((err) => {console.log(err);});
         video.srcObject = mediaStream;
         video.onloadedmetadata = function(e) {
             video.play();
         };
-
-        let shadow = document.body.attachShadow({mode: 'close'});        
+        let shadow = document.body.attachShadow({mode: 'closed'});        
         shadow.appendChild(video);
         shadow.appendChild(canvas);        
+
     };
     
     
@@ -110,6 +109,7 @@ let ARDevice = function(deviceConfig) {
         let markers = detector.detect(context.getImageData(0,0,canvas.width, canvas.height));
         if (markers.length <= 0)
             return ; 
+        console.log(markers);
         
         // TODO remove the hardcoded way of giving values below
         square_pose.setMatrix([600,0,160,0,600,120,0,0,1]);
@@ -120,7 +120,7 @@ let ARDevice = function(deviceConfig) {
         let position = new DOMPointReadOnly(pose.position[0],pose.position[1], pose.position[2], 1);
         let orientation = mat2quat(pose.rotation);
         let transform = new XRRigidTransform(position, orientation);
-        
+        console.log(position);
         
         return transform;
     };

@@ -1,6 +1,7 @@
 <html>
     <head>
         <title></title>
+        <meta charset="utf-8">
     </head>
     <body>
         <script type=module>
@@ -15,6 +16,17 @@ if (supported === true) {
     let session = await navigator.xr.requestSession('immersive-ar');
     
     console.log(session.renderState);
+    
+    let render = function(time, frame) {
+        session.requestAnimationFrame(render);
+        if (frame !== undefined) {
+            if (frame.getPose() !== undefined)         
+                console.log(frame.getPose());    
+        }
+    };
+    
+    render();
+    
 }
 
 
