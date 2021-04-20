@@ -35,10 +35,11 @@ let XRSession = function(device, params) {
     this.end = function() {        
     };
     
+        
     this.requestAnimationFrame = function(animationFrameCallback) {        
         // here we sould cook another callback in order to be compatible
         let sessionCallback = function() {
-            animationFrameCallback(Date.now() - refTime, device.getFrame());
+            animationFrameCallback(Date.now() - refTime, new XRFrame(this, device));
         };                
         return window.requestAnimationFrame(sessionCallback);
     };

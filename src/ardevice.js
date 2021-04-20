@@ -6,7 +6,8 @@ import POS from '../deps/pose/square_pose.js';
 let ARDevice = function(deviceConfig) {
     let canvas = null; 
     let video = null;
-    let detector = new AR.Detector();
+    let detector = new AR.Detector();    
+    let square_pose = new POS.SquareFiducial();    
     
     Object.defineProperty(this, "started", {
         get: function() { return started; }
@@ -90,7 +91,18 @@ let ARDevice = function(deviceConfig) {
     };
     
     
-    this.getFrame = function() {
+    this.getProjection = function() {
+        // TODO remove the hardcoded way of giving values below        
+        let projection = new Float32Array([
+            600 / 160, 0, 0, 0,
+            0, 600 / 120, 0, 0,
+            0, 0, -10.01/9.99, -1,
+            0, 0, -0.2/9.99,0            
+        ]);
+        return projection;
+    };
+    
+    this.getTransform = function() {
         if (canvas === null) 
             return;
         let context = canvas.getContext('2d');
@@ -99,12 +111,18 @@ let ARDevice = function(deviceConfig) {
         if (markers.length <= 0)
             return ; 
         
+        // TODO remove the hardcoded way of giving values below
+        square_pose.setMatrix([600,0,160,0,600,120,0,0,1]);
+        square_pose.setModelSize(0.07);
+
         let pose = square_pose.pose(markers[0].corners);
         
         let position = new DOMPointReadOnly(pose.position[0],pose.position[1], pose.position[2], 1);
         let orientation = mat2quat(pose.rotation);
         let transform = new XRRigidTransform(position, orientation);
         
+        
+        return transform;
     };
     
     

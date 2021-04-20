@@ -1,7 +1,7 @@
 import XRPose from './xrpose.js';
 import XRViewerPose from './xrviewerpose.js';
 
-let XRFrame = function(xrSession) {
+let XRFrame = function(xrSession,xrDevice) {
     let session = xrSession;
     
     Object.defineProperty(this,"session", {
@@ -9,11 +9,13 @@ let XRFrame = function(xrSession) {
     });
     
     this.getViewerPose = function(referenceSpace) {
-        
+        // TODO check things about spaces
+        return new XRView(xrDevice.getProjection(), xrDevice.getTransform());
     };
     
     this.getPose = function(space, baseSpace) {
-        // TODO only 
+        // TODO check things about spaces
+        return xrDevice.getTransform();
     };
 
 };
