@@ -117,10 +117,13 @@ let ARCompositor = function (ardevice) {
         glLayer = layer;
     };
 
+    this.isActive = function() {
+        return glLayer !== null;
+    }
     
     this.updateVideo = function() {
         gl.bindTexture(gl.TEXTURE_2D, texture0);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ardevice.getImage());        
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ardevice.getImager());        
     }
 
     this.render = function() {

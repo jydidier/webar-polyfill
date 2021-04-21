@@ -77,6 +77,10 @@ let ARDevice = function(deviceConfig) {
         canvas.height = video.height = constraints.video.height;
         canvas.style.width = canvas.width + "px";
         canvas.style.height = canvas.height + "px";
+        
+        // in order to hide our new elements
+        video.style.display = "none";
+        canvas.style.display = "none";
 
         let mediaStream = await navigator.mediaDevices.getUserMedia(constraints).catch((err) => {console.log(err);});
         video.srcObject = mediaStream;
