@@ -55,8 +55,7 @@ let XRSession = function(device, params) {
     this.updateRenderState = function(newState) {
         // TODO let's cook the render state given here.
         if (newState.hasOwnProperty(baseLayer)) {
-         
-            
+                        
         }
         
     };
