@@ -4,7 +4,7 @@ import XRView from './xrview.js';
 let XRViewerPose = function(projmat, transform)  {
     let views = function() {        
         // TODO define projmat, transform
-        return new XRView(projmat, transform);
+        return [new XRView(projmat, transform)];
     };
 
     

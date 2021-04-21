@@ -87,7 +87,7 @@ let ARDevice = function(deviceConfig) {
         video.onloadedmetadata = function(e) {
             video.play();
         };
-        let shadow = document.body.attachShadow({mode: 'closed'});        
+        let shadow = document.body; //.attachShadow({mode: 'closed'});        
         shadow.appendChild(video);
         shadow.appendChild(canvas);        
 
@@ -106,13 +106,18 @@ let ARDevice = function(deviceConfig) {
     };
     
     this.getTransform = function() {
+        let nullTransform = new XRRigidTransform(
+                new DOMPointReadOnly(0,0,0,1),
+                new DOMPointReadOnly(0,0,0,1),                        
+            );
+        
         if (canvas === null) 
-            return;
+            return nullTransform;
         let context = canvas.getContext('2d');
         context.drawImage(video,0,0);
         let markers = detector.detect(context.getImageData(0,0,canvas.width, canvas.height));
-        if (markers.length <= 0)
-            return ; 
+        if (markers.length <= 0) 
+            return nullTransform; 
         console.log(markers);
         
         // TODO remove the hardcoded way of giving values below

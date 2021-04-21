@@ -16,7 +16,7 @@ let XRWebGLLayer = function(session, context, layerInit) {
     });
     
     Object.defineProperty(this,"framebuffer", {
-        get: function() { return currentContext.getParameter(gl.FRAMEBUFFER_BINDING); }
+        get: function() { return currentContext.getParameter(currentContext.FRAMEBUFFER_BINDING); }
     });
     
     Object.defineProperty(this, "framebufferWidth", {
@@ -33,6 +33,15 @@ let XRWebGLLayer = function(session, context, layerInit) {
         get: function() { return currentContext; }
     });
     
+
+    this.getViewport = function() {
+        return {
+            x: 0, y: 0,   
+            width: currentContext.drawingBufferWidth,
+            height: currentContext.drawingBufferHeight
+        };
+        
+    }
     
     currentContext = context;
 };

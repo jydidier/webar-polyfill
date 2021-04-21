@@ -1,5 +1,6 @@
 import XRSession from './xrsession.js';
 import ARDevice from './ardevice.js';
+import XRWebGLLayer from './xrwebgllayer.js';
 
 let XRSystem = function() {
     let device;
@@ -23,7 +24,13 @@ let XRSystem = function() {
     };
 };
 
+XRSystem.prototype = Object.create(EventTarget.prototype);
+XRSystem.prototype.constructor = XRSystem;
+
+
+
 let xrSystem = new XRSystem();
 
 navigator.xr.isSessionSupported = xrSystem.isSessionSupported;
 navigator.xr.requestSession = xrSystem.requestSession;
+window.XRWebGLLayer = XRWebGLLayer;

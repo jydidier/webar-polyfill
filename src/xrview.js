@@ -1,7 +1,7 @@
 
 let XRView = function(projMat,tr) {
     let projectionMatrix = projMat;
-    let transform = transform;
+    let transform = tr;
     
     Object.defineProperty(this,"eye", {
         value: "none", writable: false
