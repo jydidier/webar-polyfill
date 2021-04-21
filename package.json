@@ -1,0 +1,13 @@
+{
+    "name" : "webar-polyfill",
+    "version" : "0.9",
+    "description": "Polyfill in order to use WebXR on a regular desktop browser",
+    "private" : true,
+    "keywords" : [],
+    "author" : "Jean-Yves Didier",
+    "license" : "BSD",
+    "devDependencies" : {
+        "webpack" : "^5.4.0",
+        "webpack-cli": "^4.2.0"
+   }
+}
