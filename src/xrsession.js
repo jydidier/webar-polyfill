@@ -1,4 +1,5 @@
 import ARCompositor from './arcompositor.js';
+import XRFrame from './xrframe.js';
 
 let XRSession = function(device, params) {
     let self=this;
@@ -35,10 +36,15 @@ let XRSession = function(device, params) {
     this.end = function() {        
     };
     
+        
     this.requestAnimationFrame = function(animationFrameCallback) {        
         // here we sould cook another callback in order to be compatible
         let sessionCallback = function() {
-            animationFrameCallback(Date.now() - refTime, device.getFrame());
+            if (compositor.isActive())
+                compositor.updateVideo();
+            animationFrameCallback(Date.now() - refTime, new XRFrame(this, device));
+            if (compositor.isActive()) 
+                compositor.render();
         };                
         return window.requestAnimationFrame(sessionCallback);
     };
@@ -47,6 +53,10 @@ let XRSession = function(device, params) {
     };
     
     this.updateRenderState = function(newState) {
+        // TODO let's cook the render state given here.
+        if (newState.hasOwnProperty(baseLayer)) {
+                        
+        }
         
     };
     

@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <script src="https://rawgit.com/mrdoob/three.js/master/build/three.js"></script>
+
+    </head>
+    <body style="width: 100vw; height: 100vh;">
+        <script type=module>
+import '../dist/webar-polyfill.js';
+
+// self calling function
+(async function() {
+
+let supported = await navigator.xr.isSessionSupported('immersive-ar');
+
+if (supported === true) {
+    let session = await navigator.xr.requestSession('immersive-ar');
+    
+    console.log(session.renderState);
+    
+
+    // classical three.js part
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    var geometry = new THREE.BoxGeometry(1,1,1);
+    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 });
+    var cube = new THREE.Mesh(geometry, material);
+    scene.add(camera);
+    scene.add(cube);
+    //renderer.domElement.hidden = true;
+    camera.position.z = 3;
+
+    // the problem is to give these values to the appropriate compositor
+    /*let arCompositor = new ARCompositor(renderer.getContext()); 
+    arCompositor.setGLLayer(renderer.getContext());*/
+
+    function render(time, frame) {
+        session.requestAnimationFrame(render);
+        // rendu 3js
+        cube.rotation.x += 0.01 ;
+        cube.rotation.y += 0.01;
+        renderer.render(scene, camera);    
+        if (frame !== undefined) {
+            if (frame.getPose() !== undefined)         
+                console.log(frame.getPose());    
+        }
+    }    
+        
+    
+    
+    
+    let render = function(time, frame) {
+        session.requestAnimationFrame(render);
+        if (frame !== undefined) {
+            if (frame.getPose() !== undefined)         
+                console.log(frame.getPose());    
+        }
+    };
+    
+    render();
+    
+}
+
+
+
+
+
+})();
+        
+        
+        </script>    
+    </body>
+</html>

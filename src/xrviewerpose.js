@@ -1,7 +1,7 @@
 import XRPose from './xrpose.js';
 import XRView from './xrview.js';
 
-let XRViewerPose = function()  {
+let XRViewerPose = function(projmat, transform)  {
     let views = function() {        
         // TODO define projmat, transform
         return new XRView(projmat, transform);
