@@ -11,6 +11,8 @@ let XRSession = function(device, params) {
     let visibilityState;
     let ended = false;
     let compositor = new ARCompositor(device);
+    let callbacks = [];
+    let frameCount = 0;
     
     
     /*Object.defineProperty(this,"environmentBlendMode", {
@@ -36,20 +38,52 @@ let XRSession = function(device, params) {
     this.end = function() {        
     };
     
-    this.spuriousMethod= function() {
-        
-    };
-        
-    this.requestAnimationFrame = function(animationFrameCallback) {        
-        // here we sould cook another callback in order to be compatible
-        let sessionCallback = function() {
-            if (compositor.isActive())
-                compositor.updateVideo();
-            animationFrameCallback(Date.now() - refTime, new XRFrame(this, device));
-            if (compositor.isActive()) 
+    
+    let renderFrame = function() {
+        let callback = callbacks.shift();
+        if (callback !== undefined) {
+            console.log('sessionCallback');                
+            callback(Date.now() - refTime, new XRFrame(this, device));
+            if (compositor.isActive()) {
+                //compositor.updateVideo();
                 compositor.render();
-        };
-        return window.requestAnimationFrame(sessionCallback);
+            }
+        }
+    }
+
+    
+    device.setRenderCallback(renderFrame);
+    
+    this.requestAnimationFrame = function(animationFrameCallback) {
+        frameCount++;
+        callbacks.push(animationFrameCallback);
+        console.log("session requestAnimationFrame");
+        // here we sould cook another callback in order to be compatible
+        /*let sessionCallback = function() {
+            console.log('sessionCallback');
+            animationFrameCallback(Date.now() - refTime, new XRFrame(this, device));
+            if (compositor.isActive()) {
+                compositor.updateVideo();
+                compositor.render();
+            }
+        };*/
+        //return window.requestAnimationFrame(sessionCallback);
+        /*console.log('device time updated', device.isTimeUpdated());
+        if (device.isTimeUpdated()) {
+            let callback = callbacks.shift();
+            if (callback !== undefined) {
+                console.log('sessionCallback');                
+                callback(Date.now() - refTime, new XRFrame(this, device));
+                if (compositor.isActive()) {
+                    compositor.updateVideo();
+                    compositor.render();
+                }
+                
+                
+            }
+        }*/
+        //return window.requestAnimationFrame(sessionCallback);
+        return frameCount;
     };
     
     this.requestReferenceSpace = function() {
@@ -85,7 +119,6 @@ let XRSession = function(device, params) {
     // another way of doing it 
     let listeners = {};
     this.addEventListener = function (type, callback) {
-        console.log("addeventlistener",type, listeners);
         if (!(type in listeners)) {
             listeners[type] = []
         }

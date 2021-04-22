@@ -3,7 +3,6 @@ let ARCompositor = function (ardevice) {
     let glLayer = null;
 
 
-
     
     // creation of the actual compositing zone
     let canvas = document.createElement("canvas");
@@ -111,7 +110,7 @@ let ARCompositor = function (ardevice) {
               new Uint8Array([0, 0, 255, 255]));
 
     
-
+    
     
     this.setGLLayer = function(layer) {
         glLayer = layer;
@@ -121,20 +120,28 @@ let ARCompositor = function (ardevice) {
         return glLayer !== null;
     }
     
-    this.updateVideo = function() {
+    /*this.updateVideo = function() {
         gl.bindTexture(gl.TEXTURE_2D, texture0);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ardevice.getImager());        
-    }
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ardevice.getImager());
+    }*/
 
     this.render = function() {
+        console.log("compositor render",glLayer);
         gl.useProgram(shaderProgram);
-//         gl.bindTexture(gl.TEXTURE_2D, texture0);
-//         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+
         if (glLayer !== null) {
             gl.bindTexture(gl.TEXTURE_2D, texture1);
             let origCanvas = glLayer.canvas;
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, origCanvas);
         }
+        
+        gl.bindTexture(gl.TEXTURE_2D, texture0);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ardevice.getImager());        
+        
+        
+        
+//         gl.bindTexture(gl.TEXTURE_2D, texture0);
+//         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.enableVertexAttribArray(positionLocation);
@@ -144,6 +151,8 @@ let ARCompositor = function (ardevice) {
         gl.uniform1i(textureLocation1, 1);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     };    
+    
+
     
 };
 

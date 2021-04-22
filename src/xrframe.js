@@ -19,6 +19,8 @@ let XRFrame = function(xrSession,xrDevice) {
         return xrDevice.getTransform();
     };
 
+    xrDevice.fetchFrame();
+    
 };
 
 export { XRFrame as default};

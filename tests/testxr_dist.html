@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <script src="https://rawgit.com/mrdoob/three.js/master/build/three.js"></script>
+
+    </head>
+    <body style="width: 100vw; height: 100vh;">
+        <script type=module>
+import '../dist/webar-polyfill.js';
+
+// self calling function
+(async function() {
+
+
+    // classical three.js part
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    let renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth,window.innerHeight); 
+    renderer.xr.enabled =true;
+    
+    document.body.appendChild(renderer.domElement);
+
+    let geometry = new THREE.BoxGeometry(1,1,1);
+    let material = new THREE.MeshBasicMaterial( { color: 0x00ff00 });
+    let cube = new THREE.Mesh(geometry, material);
+    scene.add(camera);
+    scene.add(cube);
+    //renderer.domElement.hidden = true;
+    cube.position.z = -5;
+
+
+    let supported = await navigator.xr.isSessionSupported('immersive-ar');
+
+    if (supported === true) {
+        let session = await navigator.xr.requestSession('immersive-ar');
+        renderer.xr.setSession( session );
+        
+        
+        function render(time, frame) {
+            console.log("render");
+            window.requestAnimationFrame(render);
+            // rendu 3js
+            cube.rotation.x += 0.01 ;
+            cube.rotation.y += 0.01;
+            renderer.render(scene, camera);    
+            /*if (frame !== undefined) {
+                if (frame.getPose() !== undefined)         
+                    console.log(frame.getPose());    
+            }*/
+        }    
+    
+        render();
+    
+    }
+
+
+
+
+
+})();
+        
+        
+        </script>    
+    </body>
+</html>

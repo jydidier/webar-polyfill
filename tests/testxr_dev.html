@@ -7,7 +7,7 @@
     </head>
     <body style="width: 100vw; height: 100vh;">
         <script type=module>
-import '../dist/webar-polyfill.js';
+import '../src/xrsystem.js';
 
 // self calling function
 (async function() {
@@ -40,11 +40,8 @@ import '../dist/webar-polyfill.js';
         renderer.xr.setSession( session );
         
         
-        console.log(session.renderState);
-        console.log(session);
-        console.log(session.addEventListener);
-        session.addEventListener('select', () => {});
         function render(time, frame) {
+            console.log("render");
             session.requestAnimationFrame(render);
             // rendu 3js
             cube.rotation.x += 0.01 ;

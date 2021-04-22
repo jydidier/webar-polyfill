@@ -7,7 +7,15 @@ let ARDevice = function(deviceConfig) {
     let canvas = null; 
     let video = null;
     let detector = new AR.Detector();    
-    let square_pose = new POS.SquareFiducial();    
+    let square_pose = new POS.SquareFiducial();  
+    let transform = new XRRigidTransform(
+        new DOMPointReadOnly(0,0,0,1),
+        new DOMPointReadOnly(0,0,0,1),                        
+    ); 
+    
+    let imageData = null;
+    
+    
     
     Object.defineProperty(this, "started", {
         get: function() { return started; }
@@ -70,7 +78,7 @@ let ARDevice = function(deviceConfig) {
      
     this.start = async function() {
         // creation of video node in order to obtain video stream
-        let constraints = { video: { width: 640, height: 480 } };
+        let constraints = { video: { width: 320, height: 240 } };
         video = document.createElement("video");
         canvas = document.createElement("canvas");
         canvas.width = video.width = constraints.video.width;
@@ -94,6 +102,13 @@ let ARDevice = function(deviceConfig) {
     };
     
     
+    this.setRenderCallback = function(renderCallback) {
+        video.addEventListener('timeupdate', renderCallback);
+        
+        
+    };
+    
+    
     this.getProjection = function() {
         // TODO remove the hardcoded way of giving values below        
         let projection = new Float32Array([
@@ -105,19 +120,17 @@ let ARDevice = function(deviceConfig) {
         return projection;
     };
     
-    this.getTransform = function() {
-        let nullTransform = new XRRigidTransform(
-                new DOMPointReadOnly(0,0,0,1),
-                new DOMPointReadOnly(0,0,0,1),                        
-            );
-        
+    
+    this.fetchFrame = function() {
+        //return;
         if (canvas === null) 
-            return nullTransform;
+            return; 
         let context = canvas.getContext('2d');
         context.drawImage(video,0,0);
-        let markers = detector.detect(context.getImageData(0,0,canvas.width, canvas.height));
+        imageData = context.getImageData(0,0,canvas.width, canvas.height);
+        let markers = detector.detect(imageData);
         if (markers.length <= 0) 
-            return nullTransform; 
+            return; 
         console.log(markers);
         
         // TODO remove the hardcoded way of giving values below
@@ -128,10 +141,18 @@ let ARDevice = function(deviceConfig) {
         
         let position = new DOMPointReadOnly(pose.position[0],pose.position[1], pose.position[2], 1);
         let orientation = mat2quat(pose.rotation);
-        let transform = new XRRigidTransform(position, orientation);
         console.log(position);
-        
+        transform = new XRRigidTransform(position, orientation); 
+        timeUpdated = false;
+    };
+
+    
+    this.getTransform = function() {
         return transform;
+    };
+    
+    this.getImageData = function() {
+        return imageData;
     };
     
     
