@@ -57,7 +57,10 @@ let XRSession = function(device, params) {
     this.requestAnimationFrame = function(animationFrameCallback) {
         frameCount++;
         callbacks.push(animationFrameCallback);
-        console.log("session requestAnimationFrame");
+        console.log("session requestAnimationFrame", callbacks.length);
+
+        
+        
         // here we sould cook another callback in order to be compatible
         /*let sessionCallback = function() {
             console.log('sessionCallback');

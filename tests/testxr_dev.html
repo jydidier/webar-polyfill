@@ -42,7 +42,7 @@ import '../src/xrsystem.js';
         
         function render(time, frame) {
             console.log("render");
-            session.requestAnimationFrame(render);
+            window.requestAnimationFrame(render);
             // rendu 3js
             cube.rotation.x += 0.01 ;
             cube.rotation.y += 0.01;

@@ -130,8 +130,10 @@ let ARCompositor = function (ardevice) {
         gl.useProgram(shaderProgram);
 
         if (glLayer !== null) {
+            console.log("original layer");
             gl.bindTexture(gl.TEXTURE_2D, texture1);
             let origCanvas = glLayer.canvas;
+            //origCanvas.getContext("webgl").finish();
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, origCanvas);
         }
         

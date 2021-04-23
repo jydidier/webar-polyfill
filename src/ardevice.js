@@ -142,8 +142,10 @@ let ARDevice = function(deviceConfig) {
         let position = new DOMPointReadOnly(pose.position[0],pose.position[1], pose.position[2], 1);
         let orientation = mat2quat(pose.rotation);
         console.log(position);
-        transform = new XRRigidTransform(position, orientation); 
-        timeUpdated = false;
+        let transformOrig = new XRRigidTransform(position, orientation); 
+        transform = transformOrig.inverse;
+        
+        //timeUpdated = false;
     };
 
     
