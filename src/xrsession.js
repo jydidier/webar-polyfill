@@ -39,12 +39,13 @@ let XRSession = function(device, params) {
     };
     
     
-    let renderFrame = function() {
+    let renderFrame = function(event) {
         let callback = callbacks.shift();
+        
         if (callback !== undefined) {
-            console.log('sessionCallback');                
-            callback(Date.now() - refTime, new XRFrame(this, device));
-            if (compositor.isActive()) {
+            let frame = new XRFrame(this, device);
+            callback(Date.now() - refTime, frame);
+            if (compositor.isActive() && callback.name !== "onAnimationFrame") {
                 //compositor.updateVideo();
                 compositor.render();
             }
@@ -57,10 +58,9 @@ let XRSession = function(device, params) {
     this.requestAnimationFrame = function(animationFrameCallback) {
         frameCount++;
         callbacks.push(animationFrameCallback);
-        console.log("session requestAnimationFrame", callbacks.length);
+        return frameCount;
+    };
 
-        
-        
         // here we sould cook another callback in order to be compatible
         /*let sessionCallback = function() {
             console.log('sessionCallback');
@@ -86,8 +86,6 @@ let XRSession = function(device, params) {
             }
         }*/
         //return window.requestAnimationFrame(sessionCallback);
-        return frameCount;
-    };
     
     this.requestReferenceSpace = function() {
     };

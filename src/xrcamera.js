@@ -146,7 +146,7 @@ var FakeXRSession = function() {
 
 
 // pour bien faire, il faudrait surcharger requestAnimationFrame du navigateur pour caler son propre requestAnimationFrame.
-
+/*
 window.requestAnimationFrame = (function(_super) {
     return function() {
         // here we can override requestAnimationFrame
@@ -154,7 +154,7 @@ window.requestAnimationFrame = (function(_super) {
         return _super.apply(this, arguments);
     };
 })(window.requestAnimationFrame);
-
+*/
 
 var FakeXRFrame = {
     session : null,

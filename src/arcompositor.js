@@ -117,33 +117,28 @@ let ARCompositor = function (ardevice) {
     };
 
     this.isActive = function() {
+        //return true;
         return glLayer !== null;
     }
     
-    /*this.updateVideo = function() {
-        gl.bindTexture(gl.TEXTURE_2D, texture0);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ardevice.getImager());
-    }*/
 
     this.render = function() {
-        console.log("compositor render",glLayer);
-        gl.useProgram(shaderProgram);
+        console.log("compositor render");
 
         if (glLayer !== null) {
-            console.log("original layer");
-            gl.bindTexture(gl.TEXTURE_2D, texture1);
+            //console.log("compositor render",glLayer);
             let origCanvas = glLayer.canvas;
-            //origCanvas.getContext("webgl").finish();
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, texture1);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, origCanvas);
         }
         
+        gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture0);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ardevice.getImager());        
         
+        gl.useProgram(shaderProgram);
         
-        
-//         gl.bindTexture(gl.TEXTURE_2D, texture0);
-//         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.enableVertexAttribArray(positionLocation);
@@ -152,6 +147,7 @@ let ARCompositor = function (ardevice) {
         gl.uniform1i(textureLocation0, 0);
         gl.uniform1i(textureLocation1, 1);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.finish();
     };    
     
 

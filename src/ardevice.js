@@ -103,9 +103,10 @@ let ARDevice = function(deviceConfig) {
     
     
     this.setRenderCallback = function(renderCallback) {
-        video.addEventListener('timeupdate', renderCallback);
+        //video.addEventListener('timeupdate', renderCallback);
+        window.setInterval(renderCallback, 50);
         
-        
+        //window.requestAnimationFrame(renderCallback);
     };
     
     
@@ -159,7 +160,7 @@ let ARDevice = function(deviceConfig) {
     
     
     this.getImager = function() {
-        return canvas;
+        return /*video*/canvas;
     };
           
 };

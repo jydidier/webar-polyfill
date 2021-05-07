@@ -30,7 +30,7 @@ import '../src/xrsystem.js';
     scene.add(camera);
     scene.add(cube);
     //renderer.domElement.hidden = true;
-    cube.position.z = -5;
+    //cube.position.z = -5;
 
 
     let supported = await navigator.xr.isSessionSupported('immersive-ar');
@@ -41,16 +41,11 @@ import '../src/xrsystem.js';
         
         
         function render(time, frame) {
-            console.log("render");
-            window.requestAnimationFrame(render);
-            // rendu 3js
+            session.requestAnimationFrame(render);
+            console.log("3js render");
             cube.rotation.x += 0.01 ;
             cube.rotation.y += 0.01;
             renderer.render(scene, camera);    
-            /*if (frame !== undefined) {
-                if (frame.getPose() !== undefined)         
-                    console.log(frame.getPose());    
-            }*/
         }    
     
         render();
