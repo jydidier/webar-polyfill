@@ -123,7 +123,6 @@ let ARCompositor = function (ardevice) {
     
 
     this.render = function() {
-        console.log("compositor render");
 
         if (glLayer !== null) {
             //console.log("compositor render",glLayer);

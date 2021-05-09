@@ -40,16 +40,19 @@ let XRSession = function(device, params) {
     
     
     let renderFrame = function(event) {
-        let callback = callbacks.shift();
+        let frame = new XRFrame(this, device);        
+        let callback = null; 
+        let callbackNumber = callbacks.length;
         
-        if (callback !== undefined) {
-            let frame = new XRFrame(this, device);
-            callback(Date.now() - refTime, frame);
-            if (compositor.isActive() && callback.name !== "onAnimationFrame") {
-                //compositor.updateVideo();
-                compositor.render();
-            }
+        for (let i=0; i < callbackNumber; i++) {
+            callback = callbacks.shift();
+            callback(Date.now() - refTime, frame);  
+        } 
+        if (compositor.isActive()) {
+            compositor.render();
         }
+        device.setRenderCallback(renderFrame);
+
     }
 
     

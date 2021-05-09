@@ -39,9 +39,9 @@ let ARDevice = function(deviceConfig) {
     var mat2quat = function(m) {
         let qw, qx, qy, qz;
         let m00, m01, m02, m10, m11, m12, m20, m21, m22;
-        [m00, m01, m02] = m[0];
-        [m10, m11, m12] = m[1];
-        [m20, m21, m22] = m[2];
+        [m00, m10, m20] = m[0];
+        [m01, m11, m21] = m[1];
+        [m02, m12, m22] = m[2];
         let tr = m00 + m11 + m22;
 
         if (tr > 0) { 
@@ -78,7 +78,7 @@ let ARDevice = function(deviceConfig) {
      
     this.start = async function() {
         // creation of video node in order to obtain video stream
-        let constraints = { video: { width: 320, height: 240 } };
+        let constraints = { video: { width: 640, height: 480 } };
         video = document.createElement("video");
         canvas = document.createElement("canvas");
         canvas.width = video.width = constraints.video.width;
@@ -104,7 +104,8 @@ let ARDevice = function(deviceConfig) {
     
     this.setRenderCallback = function(renderCallback) {
         //video.addEventListener('timeupdate', renderCallback);
-        window.setInterval(renderCallback, 50);
+        //console.log("renderCallback");
+        window.setTimeout(renderCallback, 33);
         
         //window.requestAnimationFrame(renderCallback);
     };
@@ -113,8 +114,8 @@ let ARDevice = function(deviceConfig) {
     this.getProjection = function() {
         // TODO remove the hardcoded way of giving values below        
         let projection = new Float32Array([
-            600 / 160, 0, 0, 0,
-            0, 600 / 120, 0, 0,
+            600 / 320, 0, 0, 0,
+            0, 600 / 240, 0, 0,
             0, 0, -10.01/9.99, -1,
             0, 0, -0.2/9.99,0            
         ]);
@@ -132,17 +133,17 @@ let ARDevice = function(deviceConfig) {
         let markers = detector.detect(imageData);
         if (markers.length <= 0) 
             return; 
-        console.log(markers);
+        //console.log(markers);
         
         // TODO remove the hardcoded way of giving values below
-        square_pose.setMatrix([600,0,160,0,600,120,0,0,1]);
+        square_pose.setMatrix([600,0,320,0,600,240,0,0,1]);
         square_pose.setModelSize(0.07);
 
         let pose = square_pose.pose(markers[0].corners);
         
         let position = new DOMPointReadOnly(pose.position[0],pose.position[1], pose.position[2], 1);
         let orientation = mat2quat(pose.rotation);
-        console.log(position);
+        //console.log(position);
         let transformOrig = new XRRigidTransform(position, orientation); 
         transform = transformOrig.inverse;
         
