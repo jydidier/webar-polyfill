@@ -13,6 +13,7 @@ let XRSession = function(device, params) {
     let compositor = new ARCompositor(device);
     let callbacks = [];
     let frameCount = 0;
+    compositor.activate();
     
     
     /*Object.defineProperty(this,"environmentBlendMode", {

@@ -95,6 +95,19 @@ POS.SquareFiducial.prototype.pose = function(imagePoints){
   var r2Star = this.scalVector(dV, 1.0/this.normVector(dV));
   var r3Star = this.crossProduct(r1Star,r2Star);
   
+  //console.log("R before", [ r1Star, r2Star, r3Star]);
+  
+  r3Star = this.scalVector(r3Star, 1.0/this.normVector(r3Star));
+  
+  // there is a small problem here that was never adressed:
+  // this is not really orthogonal matrix between r1Star and r2Star  
+  var rMedian = this.sumVectors(r1Star, r2Star);
+  rMedian = this.scalVector(rMedian, 1.0/this.normVector(rMedian));
+  r1Star = this.rotate(rMedian,Math.PI/4,r3Star);
+  r2Star = this.rotate(rMedian,-Math.PI/4,r3Star);
+  //console.log("R after", [ r1Star, r2Star, r3Star]);
+
+  
   var rotation = [ [ r1Star[0], r2Star[0], r3Star[0] ],
 		   [ r1Star[1], r2Star[1], r3Star[1] ],
 		   [ r1Star[2], r2Star[2], r3Star[2] ]];
@@ -118,11 +131,26 @@ POS.SquareFiducial.prototype.normVector = function (a) {
   return Math.sqrt(a[0]*a[0]+a[1]*a[1]+a[2]*a[2]); 
 };
 
+POS.SquareFiducial.prototype.dotProduct = function(a,b) {
+    return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];    
+};
+
 POS.SquareFiducial.prototype.crossProduct = function(a,b) {
     return [ a[1]*b[2] - a[2]*b[1],
 	     a[2]*b[0] - a[0]*b[2],
 	     a[0]*b[1] - a[1]*b[0]    
 	    ];  
+};
+
+POS.SquareFiducial.prototype.rotate = function(x,a,n) {
+    let dnx = this.dotProduct(n,x);
+    let cnx = this.crossProduct(x,n);
+    
+    let x1 = this.scalVector(x,Math.cos(a));
+    let x2 = this.scalVector(n,dnx*(1-Math.cos(a)));
+    let x3 = this.scalVector(cnx,Math.sin(a));
+    
+    return this.sumVectors(x1, this.sumVectors(x2,x3));
 };
 
 

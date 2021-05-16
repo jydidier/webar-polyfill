@@ -39,9 +39,9 @@ let ARDevice = function(deviceConfig) {
     var mat2quat = function(m) {
         let qw, qx, qy, qz;
         let m00, m01, m02, m10, m11, m12, m20, m21, m22;
-        [m00, m10, m20] = m[0];
-        [m01, m11, m21] = m[1];
-        [m02, m12, m22] = m[2];
+        [m00, m01, m02] = m[0];
+        [m10, m11, m12] = m[1];
+        [m20, m21, m22] = m[2];
         let tr = m00 + m11 + m22;
 
         if (tr > 0) { 
@@ -95,10 +95,9 @@ let ARDevice = function(deviceConfig) {
         video.onloadedmetadata = function(e) {
             video.play();
         };
-        let shadow = document.body; //.attachShadow({mode: 'closed'});        
+        let shadow = document.body;//.attachShadow({mode: 'open'});        
         shadow.appendChild(video);
         shadow.appendChild(canvas);        
-
     };
     
     
@@ -116,8 +115,8 @@ let ARDevice = function(deviceConfig) {
         let projection = new Float32Array([
             600 / 320, 0, 0, 0,
             0, 600 / 240, 0, 0,
-            0, 0, -10.01/9.99, -1,
-            0, 0, -0.2/9.99,0            
+            0, 0, -10.1/9.9, -1,
+            0, 0, -2/9.9,0            
         ]);
         return projection;
     };

@@ -119,7 +119,31 @@ let ARCompositor = function (ardevice) {
     this.isActive = function() {
         //return true;
         return glLayer !== null;
-    }
+    };
+    
+    this.activate = async function() {
+        await canvas.requestFullscreen()
+            .catch((e) => { 
+                // the behaviour below emulates fullscreen
+                let maxZIndex = Array.from(document.querySelectorAll('body *'))
+                    .map(a => parseFloat(window.getComputedStyle(a).zIndex))
+                    .filter(a => !isNaN(a))
+                    .reduce((acc, val) => (acc>val)?acc:val,0);
+                //console.log(maxZIndex);
+                    
+                canvas.style.position="absolute";
+                canvas.style.top = 0;
+                canvas.style.bottom = 0;
+                canvas.style.left = 0;
+                canvas.style.right=0;
+                canvas.style.display="block";
+                canvas.style.zIndex = maxZIndex + 1;
+                console.log('Fullscreen not allowed, fallback is applied.');
+                
+            }
+                
+        );
+    };
     
 
     this.render = function() {
