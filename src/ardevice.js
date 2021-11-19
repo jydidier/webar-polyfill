@@ -99,10 +99,9 @@ let ARDevice = function(deviceConfig) {
         video.onloadedmetadata = function(e) {
             video.play();
         };
-        let shadow = document.body; //.attachShadow({mode: 'closed'});        
+        let shadow = document.body;//.attachShadow({mode: 'open'});        
         shadow.appendChild(video);
         shadow.appendChild(canvas);        
-
     };
     
     
@@ -122,8 +121,8 @@ let ARDevice = function(deviceConfig) {
         let projection = new Float32Array([
             600 / 320, 0, 0, 0,
             0, 600 / 240, 0, 0,
-            0, 0, -10.01/9.99, -1,
-            0, 0, -0.2/9.99,0            
+            0, 0, -10.1/9.9, -1,
+            0, 0, -2/9.9,0            
         ]);
         return projection;
     };

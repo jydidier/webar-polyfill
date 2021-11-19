@@ -735,4 +735,10 @@ CV.binaryBorder = function(imageSrc, dst){
   return dst;
 };
 
+
+// we should add a findCornerSubPix
+// https://github.com/opencv/opencv/blob/master/modules/imgproc/src/cornersubpix.cpp
+// 20 iterations, epsilon value 0.03 are good starting points
+
+
 export default CV;

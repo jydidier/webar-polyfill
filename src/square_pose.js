@@ -109,6 +109,7 @@ POS.SquareFiducial.prototype.pose = function(imagePoints){
         [ r1Star[2], r2Star[2], r3Star[2] ]        
     ];
     return new POS.SimplePose(position, rotation);
+
 };
 
 POS.SquareFiducial.prototype.sumVectors = function(a,b) {
@@ -127,11 +128,26 @@ POS.SquareFiducial.prototype.normVector = function (a) {
   return Math.sqrt(a[0]*a[0]+a[1]*a[1]+a[2]*a[2]); 
 };
 
+POS.SquareFiducial.prototype.dotProduct = function(a,b) {
+    return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];    
+};
+
 POS.SquareFiducial.prototype.crossProduct = function(a,b) {
     return [ a[1]*b[2] - a[2]*b[1],
 	     a[2]*b[0] - a[0]*b[2],
 	     a[0]*b[1] - a[1]*b[0]    
 	    ];  
+};
+
+POS.SquareFiducial.prototype.rotate = function(x,a,n) {
+    let dnx = this.dotProduct(n,x);
+    let cnx = this.crossProduct(x,n);
+    
+    let x1 = this.scalVector(x,Math.cos(a));
+    let x2 = this.scalVector(n,dnx*(1-Math.cos(a)));
+    let x3 = this.scalVector(cnx,Math.sin(a));
+    
+    return this.sumVectors(x1, this.sumVectors(x2,x3));
 };
 
 
