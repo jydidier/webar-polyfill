@@ -14,8 +14,14 @@ let ARDevice = function(deviceConfig) {
     ); 
     
     let imageData = null;
+    let intrinsics = null;
     
+    let thisScript = document.currrentScript;
+    if (thisScript.hasAttribute('data-intrinsics')) {
+        intrinsics = JSON.parse(thisScript.dataIntrinsics);
+    }
     
+    intrinsics = intrinsics || [600,0,320,0,600,240,0,0,1];
     
     Object.defineProperty(this, "started", {
         get: function() { return started; }
@@ -32,16 +38,14 @@ let ARDevice = function(deviceConfig) {
         writable: false
     });
      
-    // choses nécessaires pour la configuration :
-    
+         
      
-     
-    var mat2quat = function(m) {
+    let mat2quat = function(m) {
         let qw, qx, qy, qz;
         let m00, m01, m02, m10, m11, m12, m20, m21, m22;
-        [m00, m10, m20] = m[0];
-        [m01, m11, m21] = m[1];
-        [m02, m12, m22] = m[2];
+        [m00, m01, m02] = m[0];
+        [m10, m11, m12] = m[1];
+        [m20, m21, m22] = m[2];
         let tr = m00 + m11 + m22;
 
         if (tr > 0) { 
@@ -103,16 +107,18 @@ let ARDevice = function(deviceConfig) {
     
     
     this.setRenderCallback = function(renderCallback) {
-        //video.addEventListener('timeupdate', renderCallback);
-        //console.log("renderCallback");
         window.setTimeout(renderCallback, 33);
-        
-        //window.requestAnimationFrame(renderCallback);
     };
     
     
     this.getProjection = function() {
-        // TODO remove the hardcoded way of giving values below        
+        // TODO remove the hardcoded way of giving values below
+        
+        let au = intrinsics[];
+        let av = intrinsics[];
+        let u0 = intrinsics[];
+        let v0 = intrinsics[];
+        
         let projection = new Float32Array([
             600 / 320, 0, 0, 0,
             0, 600 / 240, 0, 0,
@@ -134,22 +140,34 @@ let ARDevice = function(deviceConfig) {
         if (markers.length <= 0) 
             return; 
         //console.log(markers);
+        drawCorners(context, markers);
         
         // TODO remove the hardcoded way of giving values below
-        square_pose.setMatrix([600,0,320,0,600,240,0,0,1]);
+        square_pose.setMatrix(intrinsics/*[600,0,320,0,600,240,0,0,1]*/);
         square_pose.setModelSize(0.07);
 
         let pose = square_pose.pose(markers[0].corners);
         
         let position = new DOMPointReadOnly(pose.position[0],pose.position[1], pose.position[2], 1);
         let orientation = mat2quat(pose.rotation);
-        //console.log(position);
         let transformOrig = new XRRigidTransform(position, orientation); 
         transform = transformOrig.inverse;
-        
         //timeUpdated = false;
     };
 
+    
+    let drawCorners = function(context, markers) {
+        for (let i = 0 ; i < markers.length; i++) {
+            context.fillStyle = "yellow";
+            for (let j = 0; j < markers[i].corners.length; j++) {
+                let corner = markers[i].corners[j];
+                context.fillRect(corner.x-1,corner.y-1, 3, 3);            
+                context.fillText(j, corner.x, corner.y);
+            }
+        }
+        
+        
+    }
     
     this.getTransform = function() {
         return transform;

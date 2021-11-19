@@ -34,72 +34,81 @@ POS.SquareFiducial = function(modelSize, focalLength, width, height){
 
 
 POS.SquareFiducial.prototype.pose = function(imagePoints){
-  var u0 = this.u0;
-  var v0 = this.v0;
-  var au = this.au;
-  var av = this.av;
+    let u0 = this.u0;
+    let v0 = this.v0;
+    let au = this.au;
+    let av = this.av;
 
-  var ua = imagePoints[0].x ;
-  var va = imagePoints[0].y ;
-  var ub = imagePoints[1].x ;
-  var vb = imagePoints[1].y ;
-  var uc = imagePoints[2].x ;
-  var vc = imagePoints[2].y ;
-  var ud = imagePoints[3].x ;
-  var vd = imagePoints[3].y ;
-   
-  var detm = uc*vd - vc*ud + ud*vb - ub*vd + ub*vc - uc*vb;
-  var ZA = 1;
-  var ZB = (ua * (vc - vd) + va * (ud - uc) + (uc*vd - ud*vc))/detm ;
-  var ZC = (ua * (vb - vd) + va * (ud - ub) - (ud*vb - ub*vd))/detm ;
-  var ZD = (ua * (vb - vc) + va * (uc - ub) + (ub*vc - uc*vb))/detm ;
-  var r1 = ZC/ZA ;
-  var r2 = ZD/ZB ;
+    let ua = imagePoints[0].x ;
+    let va = imagePoints[0].y ;
+    let ub = imagePoints[1].x ;
+    let vb = imagePoints[1].y ;
+    let uc = imagePoints[2].x ;
+    let vc = imagePoints[2].y ;
+    let ud = imagePoints[3].x ;
+    let vd = imagePoints[3].y ;
     
-  var tmp11 = (r1*(ua - u0)-(uc -u0))/au ;
-  var tmp12 = (r1*(va - v0)-(vc -v0))/av ;
-  var tmp21 = (r2*(ud - u0)-(ub -u0))/au ;
-  var tmp22 = (r2*(vd - v0)-(vb -v0))/av ;
-    
-  var ZpA = -this.modelSize / Math.sqrt((r1-1)*(r1-1) + tmp11*tmp11 + tmp12*tmp12) ;
-  var ZpB = -this.modelSize / Math.sqrt((r2-1)*(r2-1) + tmp21*tmp21 + tmp22*tmp22) ;
-  var ZpC = r1 * ZpA;
-  var ZpD = r2 * ZpB;
+    let detm = uc*vd - vc*ud + ud*vb - ub*vd + ub*vc - uc*vb;
+    let ZA = 1;
+    let ZB = (ua * (vc - vd) + va * (ud - uc) + (uc*vd - ud*vc))/detm ;
+    let ZC = (ua * (vb - vd) + va * (ud - ub) - (ud*vb - ub*vd))/detm ;
+    let ZD = (ua * (vb - vc) + va * (uc - ub) + (ub*vc - uc*vb))/detm ;
+    let r1 = ZC/ZA ;
+    let r2 = ZD/ZB ; //ZB/ZD ;
+        
+    let tmp11 = (r1*(ua - u0)-(uc -u0))/au ;
+    let tmp12 = (r1*(va - v0)-(vc -v0))/av ;
+    let tmp21 = (r2*(ub - u0)-(ud -u0))/au ;
+    let tmp22 = (r2*(vb - v0)-(vd -v0))/av ;
+        
+    let ZpA = -this.modelSize*Math.sqrt(2) / Math.sqrt((r1-1)*(r1-1) + tmp11*tmp11 + tmp12*tmp12) ;
+    let ZpB = -this.modelSize*Math.sqrt(2) / Math.sqrt((r2-1)*(r2-1) + tmp21*tmp21 + tmp22*tmp22) ;
+    let ZpC = r1 * ZpA;
+    let ZpD = r2 * ZpB;
 
-  var XA = ZpA/au *(ua-u0);
-  var XB = ZpB/au *(ub-u0);
-  var XC = ZpC/au *(uc-u0);
-  var XD = ZpD/au *(ud-u0);
-  
-  var YA = ZpA/av *(va-v0);
-  var YB = ZpB/av *(vb-v0);
-  var YC = ZpC/av *(vc-v0);
-  var YD = ZpD/av *(vd-v0);
-  
-  var position = [];
-  position[0] = -(XA + XB + XC + XD)/4.0;
-  position[1] = (YA + YB + YC + YD)/4.0;
-  position[2] = (ZpA + ZpB + ZpC + ZpD)/4.0;
-   
-  var AC = [ - XC + XA, YC - YA, ZpC - ZpA ];
-  var DB = [ - XB + XD, YB - YD, ZpB - ZpD ];
-  
-  var AB = [ XB - XA, YB - YA, ZpB - ZpA ];
-  var DA = [ XA - XD, YA - YD, ZpA - ZpD ];
-  
-  
-  var sV = this.sumVectors(AC,DB);
-  var dV = this.diffVectors(DB,AC);
-  
-  var r1Star = this.scalVector(sV, 1.0/this.normVector(sV));
-  var r2Star = this.scalVector(dV, 1.0/this.normVector(dV));
-  var r3Star = this.crossProduct(r1Star,r2Star);
-  
-  var rotation = [ [ r1Star[0], r2Star[0], r3Star[0] ],
-		   [ r1Star[1], r2Star[1], r3Star[1] ],
-		   [ r1Star[2], r2Star[2], r3Star[2] ]];
-  //console.log(rotation);
-  return new POS.SimplePose(position, rotation);
+    let XA = ZpA/au *(ua-u0);
+    let XB = ZpB/au *(ub-u0);
+    let XC = ZpC/au *(uc-u0);
+    let XD = ZpD/au *(ud-u0);
+    
+    let YA = ZpA/av *(va-v0);
+    let YB = ZpB/av *(vb-v0);
+    let YC = ZpC/av *(vc-v0);
+    let YD = ZpD/av *(vd-v0);
+    
+    let position = [];
+    position[0] = -(XA + XB + XC + XD)/4.0;
+    position[1] = (YA + YB + YC + YD)/4.0;
+    position[2] = (ZpA + ZpB + ZpC + ZpD)/4.0;
+    
+    let AC = [ - XC + XA, YC - YA, ZpC - ZpA ];
+    let DB = [ - XB + XD, YB - YD, ZpB - ZpD ];
+    
+    let AB = [ XB - XA, YB - YA, ZpB - ZpA ];
+    let DA = [ XA - XD, YA - YD, ZpA - ZpD ];
+    
+    
+    let sV = this.sumVectors(AC,DB);
+    let dV = this.diffVectors(DB,AC);
+    
+    let xStar = this.scalVector(sV, 1.0/this.normVector(sV));
+    let yStar = this.scalVector(dV, 1.0/this.normVector(dV));
+    let zStar = this.crossProduct(xStar,yStar);
+    let r3Star = this.scalVector(zStar,1.0/this.normVector(zStar));
+    let xpStar = this.crossProduct(yStar,r3Star);
+    let xppStar = this.sumVectors(xStar,xpStar);
+    
+    let r1Star = this.scalVector(xppStar,1.0/this.normVector(xppStar));
+    let r2Star = this.crossProduct(r3Star,r1Star); 
+    //console.log(zStar, r3Star);
+
+    
+    let rotation = [ 
+        [ r1Star[0], r2Star[0], r3Star[0] ],
+        [ r1Star[1], r2Star[1], r3Star[1] ],
+        [ r1Star[2], r2Star[2], r3Star[2] ]        
+    ];
+    return new POS.SimplePose(position, rotation);
 };
 
 POS.SquareFiducial.prototype.sumVectors = function(a,b) {

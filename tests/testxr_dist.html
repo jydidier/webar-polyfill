@@ -5,9 +5,10 @@
         <script src="https://rawgit.com/mrdoob/three.js/master/build/three.js"></script>
 
     </head>
-    <body style="width: 100vw; height: 100vh;">
+    <body style="width: 100vw; height: 100vh; margin:0; padding:0;">
+        <script type="module" src="../dist/webar-polyfill.js"></script> 
         <script type=module>
-import '../dist/webar-polyfill.js';
+//import '../dist/webar-polyfill.js';
 
 // self calling function
 (async function() {
@@ -15,7 +16,7 @@ import '../dist/webar-polyfill.js';
 
     // classical three.js part
     let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10);
     let renderer = new THREE.WebGLRenderer({alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -25,15 +26,14 @@ import '../dist/webar-polyfill.js';
     document.body.appendChild(renderer.domElement);
 
     let geometry = new THREE.BoxGeometry(1,1,1);
-    let material = new THREE.MeshBasicMaterial( { color: 0x00ff00 });
+    let material = new THREE.MeshBasicMaterial( { color: 0x00ff00, opacity: 0.5, transparent: true });
     let cube = new THREE.Mesh(geometry, material);
     scene.add(camera);
     scene.add(cube);
-    //renderer.domElement.hidden = true;
-    cube.position.z = 0.0175;
-    cube.scale.x = 0.035;
-    cube.scale.y = 0.035;
-    cube.scale.z = 0.035;
+    cube.position.z = 0.035;
+    cube.scale.x = 0.07;
+    cube.scale.y = 0.07;
+    cube.scale.z = 0.07;
 
 
     let supported = await navigator.xr.isSessionSupported('immersive-ar');

@@ -11,7 +11,6 @@ let ARCompositor = function (ardevice) {
     canvas.style.width = window.innerWidth + "px";
     canvas.style.height = window.innerHeight + "px";
     
-    
     //canvas.hidden = true;
     let gl = canvas.getContext("webgl");
     if (!gl) {

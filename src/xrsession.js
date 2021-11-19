@@ -162,7 +162,7 @@ let XRSession = function(device, params) {
 };
 
 
-/*XRSession.prototype = Object.create(EventTarget.prototype);
-XRSession.prototype.constructor = XRSession;*/
+XRSession.prototype = Object.create(EventTarget.prototype);
+XRSession.prototype.constructor = XRSession;
 
 export { XRSession as default}; 

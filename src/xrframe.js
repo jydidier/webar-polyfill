@@ -11,6 +11,8 @@ let XRFrame = function(xrSession,xrDevice) {
     
     this.getViewerPose = function(referenceSpace) {
         // TODO check things about spaces
+        
+        //console.log(referenceSpace);
         return new XRViewerPose( xrDevice.getProjection(), xrDevice.getTransform());
     };
     
