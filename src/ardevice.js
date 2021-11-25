@@ -15,13 +15,29 @@ let ARDevice = function(deviceConfig) {
     
     let imageData = null;
     let intrinsics = null;
+    let near = null;
+    let far = null;
+    let width = null;
+    let height = null;
     
-    let thisScript = document.currrentScript;
+    /*let thisScript = document.currentScript;
+    console.log(thisScript);
+    console.log(document.currentScript.async);
     if (thisScript.hasAttribute('data-intrinsics')) {
         intrinsics = JSON.parse(thisScript.dataIntrinsics);
     }
+    if (thisScript.hasAttribute('data-range')) {
+        [near, far] = JSON.parse(thisScript.dataRange);
+    }
+    if (thisScript.hasAttribute('data-resolution')) {
+        [width, height] = JSON.parse(thisScript.dataResolution);
+    }*/
     
     intrinsics = intrinsics || [600,0,320,0,600,240,0,0,1];
+    near = near || 0.1;
+    far = far || 10;
+    width = width || 640;
+    height = height || 480;
     
     Object.defineProperty(this, "started", {
         get: function() { return started; }
@@ -111,18 +127,26 @@ let ARDevice = function(deviceConfig) {
     
     
     this.getProjection = function() {
-        // TODO remove the hardcoded way of giving values below
+        // TODO remove the hardcoded way of giving values below        
+        let au = intrinsics[0];
+        let av = intrinsics[4];
+        let u0 = intrinsics[2];
+        let v0 = intrinsics[5];
+        let n = near;
+        let f = far;
+        let w = width;
+        let h = height;
         
-        let au = intrinsics[];
-        let av = intrinsics[];
-        let u0 = intrinsics[];
-        let v0 = intrinsics[];
+        let r = n/au*(w-u0);
+        let l = -n/au*u0;
+        let t = n/av*(h-u0);
+        let b = -n/av*v0;
         
         let projection = new Float32Array([
-            600 / 320, 0, 0, 0,
-            0, 600 / 240, 0, 0,
-            0, 0, -10.1/9.9, -1,
-            0, 0, -2/9.9,0            
+            2*n/(r-l),  0,          0,          0,
+            0,          2*n/(t-b),  0,          0,
+            (r+l)/(r-l),(t+b)/(t-b),-(f+n)/(f-n),-1,
+            0,          0,          -2*f*n/(f-n),0            
         ]);
         return projection;
     };
